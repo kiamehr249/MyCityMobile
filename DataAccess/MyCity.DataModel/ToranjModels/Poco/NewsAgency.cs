@@ -14,7 +14,6 @@ namespace MyCity.DataModel.ToranjModels
         public string IconURI { get; set; }
         public string PictureURI { get; set; }
         public bool Enabled { get; set; }
-        public DateTime CreateDateTime { get; set; }
 
         public virtual NewsAgency Parent { get; set; }
         public virtual ICollection<NewsAgency> Child { get; set; }

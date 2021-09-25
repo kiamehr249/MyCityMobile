@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -40,6 +41,8 @@ namespace MyCity.DataAccess
         IList<TResult> GetAll<TResult>(List<Expression<Func<T, bool>>> predicates, Expression<Func<T, TResult>> selectItem);
 
         IList<TResult> GetAll<TResult>(Expression<Func<T, bool>> predicate, Expression<Func<T, TResult>> selectItem, int startIndex, int size);
+
+        IQueryable<TResult> QueryMaker<TResult>(Func<IQueryable<T>, IQueryable<TResult>> queryFunction);
 
         List<Expression<Func<T, bool>>> ExpressionMaker();
 

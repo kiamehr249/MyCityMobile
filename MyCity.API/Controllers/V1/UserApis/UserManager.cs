@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace MyCity.API.Controllers.V1.UserApis
 {
     [Route("/api/v1/[controller]/[action]")]
-    //[Authorize(Roles = "Admin")]
+    [Authorize("AdminAccess")]
     public class UserManager : ControllerBase
     {
         private readonly IConfiguration _config;
@@ -32,7 +32,6 @@ namespace MyCity.API.Controllers.V1.UserApis
             _roleManager = roleManager;
         }
         
-        [Authorize("AdminAccess")]
         [HttpPost]
         public async Task<IActionResult> SetUserRole([FromBody] UserRoleRequest request)
         {
@@ -71,7 +70,6 @@ namespace MyCity.API.Controllers.V1.UserApis
 
         }
 
-        [Authorize("AdminAccess")]
         [HttpPost]
         public async Task<IActionResult> SetRole([FromBody] RoleRequest request)
         {

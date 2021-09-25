@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace MyCity.DataModel.ToranjModels.Configs
+namespace MyCity.DataModel.ToranjModels
 {
     public interface IToranjServices
     {
@@ -12,9 +12,9 @@ namespace MyCity.DataModel.ToranjModels.Configs
         public INewsAgencyService iNewsAgencyServ { get; set; }
 
 
-        public ToranjServices(IConfiguration Configuration)
+        public ToranjServices(IConfiguration config)
         {
-            IToranjUnitOfWork uow = new ToranjDbContext(Configuration.GetConnectionString("SystemBase"));
+            IToranjUnitOfWork uow = new ToranjDbContext(config.GetConnectionString("ToranjDb"));
             iNewsAgencyServ = new NewsAgencyService(uow);
         }
     }

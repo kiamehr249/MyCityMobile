@@ -95,6 +95,13 @@ namespace MyCity.API
                 policy.RequireRole("Admin", "User");
             }));
 
+            services.AddAuthorization(options => options.AddPolicy("ExpertAccess", policy =>
+            {
+                policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+                policy.RequireAuthenticatedUser();
+                policy.RequireRole("Admin", "Expert");
+            }));
+
             services.Configure<IISServerOptions>(options =>
             {
                 options.AutomaticAuthentication = true;
