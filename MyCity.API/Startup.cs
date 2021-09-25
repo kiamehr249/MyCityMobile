@@ -13,6 +13,7 @@ using MyCity.DataModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -80,10 +81,18 @@ namespace MyCity.API
                 };
             });
 
-            services.AddAuthorization(options => options.AddPolicy("AccessToken", policy =>
+            services.AddAuthorization(options => options.AddPolicy("AdminAccess", policy =>
             {
                 policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
                 policy.RequireAuthenticatedUser();
+                policy.RequireRole("Admin");
+            }));
+
+            services.AddAuthorization(options => options.AddPolicy("UserAccess", policy =>
+            {
+                policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+                policy.RequireAuthenticatedUser();
+                policy.RequireRole("Admin", "User");
             }));
 
             services.Configure<IISServerOptions>(options =>
