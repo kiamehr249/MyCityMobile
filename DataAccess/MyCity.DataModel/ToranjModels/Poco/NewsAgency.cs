@@ -17,5 +17,6 @@ namespace MyCity.DataModel.ToranjModels
 
         public virtual NewsAgency Parent { get; set; }
         public virtual ICollection<NewsAgency> Child { get; set; }
+        public virtual ICollection<News> News { get; set; }
     }
 }
