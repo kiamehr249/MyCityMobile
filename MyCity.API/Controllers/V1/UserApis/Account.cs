@@ -71,8 +71,8 @@ namespace MyCity.API.Controllers.V1.UserApis
             {
                 Subject = new ClaimsIdentity(userClaims),
                 Expires = nowUtcTime.AddDays(lifeDaies),
-                Issuer = "niksoftgroup.ir",
-                Audience = "niksoftgroup.ir",
+                Issuer = "ysp24.ir",
+                Audience = "ysp24.ir",
                 SigningCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
