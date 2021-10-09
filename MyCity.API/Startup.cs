@@ -10,7 +10,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using MyCity.API.Services.SMS;
 using MyCity.DataModel;
+using MyCity.DataModel.AppModels;
 
 namespace MyCity.API {
 	public class Startup {
@@ -30,7 +32,11 @@ namespace MyCity.API {
 			}).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 
 			services.AddControllersWithViews();
-			services.AddRazorPages();
+
+			services.AddScoped<ISmsService, SmsService>();
+			services.AddScoped<IMyDataService, MyDataService>();
+
+
 
 			services.PostConfigure<CookieAuthenticationOptions>(IdentityConstants.ApplicationScheme,
 			opt => {
@@ -88,6 +94,8 @@ namespace MyCity.API {
 				options.AutomaticAuthentication = true;
 			});
 
+
+			services.AddRazorPages();
 			services.AddDirectoryBrowser();
 
 		}

@@ -55,6 +55,7 @@ namespace MyCity.API.Controllers.V1.NewsApis
             }).ToList();
             return Ok(new
             {
+				Message = "لیست سرویس های خبری",
                 BaseAddress = baseAddress,
                 Data = data
             });
@@ -93,6 +94,7 @@ namespace MyCity.API.Controllers.V1.NewsApis
             }).ToList();
             return Ok(new
             {
+				Message = "اخبار موجود در سرویس خبری",
                 BaseAddress = baseAddress,
                 Data = data
             });
@@ -107,7 +109,8 @@ namespace MyCity.API.Controllers.V1.NewsApis
             var news = await _iToranjServ.iNewsServ.FindAsync(x => x.ID == request.NewsId);
             return Ok(new
             {
-                BaseAddress = baseAddress,
+				Message = "نمایش خبر",
+				BaseAddress = baseAddress,
                 Data = new
                 {
                     news.ID,
