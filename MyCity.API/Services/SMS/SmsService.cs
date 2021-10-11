@@ -35,14 +35,14 @@ namespace MyCity.API.Services.SMS {
 				Status = (int) response.StatusCode
 			};
 
-			//if (response.StatusCode != HttpStatusCode.OK) {
-			//	result.Content = new SmsGetTokenResponse {
-			//		TokenKey = "",
-			//		IsSuccessful = false,
-			//		Message = response.Content
-			//	};
-			//	return result;
-			//}
+			if ((int)response.StatusCode != 200 && (int) response.StatusCode != 201) {
+				result.Content = new SmsGetTokenResponse {
+					TokenKey = "",
+					IsSuccessful = false,
+					Message = response.Content
+				};
+				return result;
+			}
 
 			var apiResponse = JsonConvert.DeserializeObject<SmsGetTokenResponse>(response.Content);
 			result.Content = apiResponse;
