@@ -298,7 +298,12 @@ namespace MyCity.API.Controllers.V1.UserApis {
 
 			await _iMyDataServ.iUserProfileServ.SaveChangesAsync();
 
-			return Ok(user.Id);
+			return Ok(new { 
+				Message = "ثبت اطلاعات کاربری",
+				Data = new {
+					IsDone = true
+				}
+			});
 
 		}
 
@@ -317,17 +322,20 @@ namespace MyCity.API.Controllers.V1.UserApis {
 			}
 
 			return Ok(new {
-				theProfile.Id,
-				theProfile.FirstName,
-				theProfile.LastName,
-				theProfile.NationalCode,
-				theProfile.Email,
-				theProfile.Address,
-				theProfile.BirthDate,
-				theProfile.CreateDate,
-				Grade = (int)theProfile.Grade,
-				theProfile.Avatar,
-				theProfile.LastModifyDate
+				Message = "اطلاعات پروفایل کاربری",
+				Data = new {
+					theProfile.Id,
+					theProfile.FirstName,
+					theProfile.LastName,
+					theProfile.NationalCode,
+					theProfile.Email,
+					theProfile.Address,
+					theProfile.BirthDate,
+					theProfile.CreateDate,
+					Grade = (int) theProfile.Grade,
+					theProfile.Avatar,
+					theProfile.LastModifyDate
+				}
 			});
 
 		}

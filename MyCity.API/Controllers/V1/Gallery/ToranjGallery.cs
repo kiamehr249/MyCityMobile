@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -172,5 +172,58 @@ namespace MyCity.API.Controllers.V1.Gallery
             });
         }
 
-    }
+		[HttpPost]
+		public async Task<IActionResult> GetMedias([FromBody] MediaListRequest request) {
+			var portalId = Convert.ToInt32(_config.GetSection("ToranjSettings:PortalId").Value);
+			var baseAddress = _config.GetSection("ToranjSettings:BaseAddress").Value;
+
+			if (request.Part == 0) {
+				request.Part = 1;
+			}
+
+			if (request.Size == 0 || request.Size > 100) {
+				request.Size = 10;
+			}
+
+			int take = request.Size;
+			int skip = (request.Part - 1) * request.Part;
+
+			int galleryType = 0;
+			int galleryId = 0;
+			if (request.MediaType == "I") {
+				galleryType = 3;
+			} else if (request.MediaType == "V") {
+				galleryType = 1;
+			} else if (request.MediaType == "S") {
+				galleryType = 2;
+			}
+
+			var gallery = await _iToranjServ.iGalleryServ.FindAsync(x => x.PortalID == portalId && x.GalleryType == galleryType);
+			if (gallery != null) {
+				galleryId = gallery.ID;
+			}
+			var albumIds = await _iToranjServ.iAlbumServ.QueryMaker(y => y.Where(x => x.Enabled && x.GalleryID == galleryId)).Select(x => x.ID).ToListAsync();
+
+			var data = await _iToranjServ.iMediaServ.QueryMaker(x => x.Where(y => y.Enabled && y.MediaType == request.MediaType && albumIds.Contains(y.AlbumID))).OrderBy(x => x.Ordering).Skip(skip).Take(take).Select(x => new {
+				x.ID,
+				x.AlbumID,
+				x.Title,
+				x.Description,
+				x.PhotoType,
+				x.Enabled,
+				x.Ordering,
+				x.Hit,
+				x.FileName,
+				x.Thumbnail,
+				x.Thumbnail2,
+				x.BackgroundPlayer,
+				x.BackgroundPlayer2
+			}).ToListAsync();
+			return Ok(new {
+				BaseAdress = baseAddress,
+				Data = data
+			});
+		}
+
+	}
 }

@@ -127,5 +127,40 @@ namespace MyCity.API.Controllers.V1.NewsApis
             });
         }
 
-    }
+		[HttpPost]
+		public IActionResult GetNews([FromBody] Pager request) {
+			var portalId = Convert.ToInt32(_config.GetSection("ToranjSettings:PortalId").Value);
+			var baseAddress = _config.GetSection("ToranjSettings:BaseAddress").Value;
+
+			if (request.Part == 0) {
+				request.Part = 1;
+			}
+
+			if (request.Size == 0 || request.Size > 100) {
+				request.Size = 10;
+			}
+
+			int take = request.Size;
+			int skip = (request.Part - 1) * request.Part;
+
+			var data = _iToranjServ.iNewsServ.QueryMaker(x => x.Where(y => y.Enabled && y.PortalID == portalId)).OrderByDescending(x => x.ID).Skip(skip).Take(take).Select(x => new {
+				x.ID,
+				x.Title,
+				x.LeadText,
+				x.FullText,
+				x.FPicture,
+				x.SPicture,
+				x.ThumbnailMid,
+				x.ThumbnailSmall,
+				x.AgencyID,
+				x.PortalID
+			}).ToList();
+			return Ok(new {
+				Message = "همه خبرها",
+				BaseAddress = baseAddress,
+				Data = data
+			});
+		}
+
+	}
 }
