@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace MyCity.API.Services.SMS {
 	public interface ISmsService {
 		Task<ApiResult<SmsGetTokenResponse>> GetTokenAsync();
-		Task<ApiResult<SmsGetTokenResponse>> GetSmsLines();
+		Task<ApiResult<string>> GetSmsLines();
 		Task<ApiResult<SmsGetTokenResponse>> SendSms(SendSmsRequest entery);
 	}
 
@@ -49,12 +49,12 @@ namespace MyCity.API.Services.SMS {
 			return result;
 		}
 
-		public async Task<ApiResult<SmsGetTokenResponse>> GetSmsLines() {
+		public async Task<ApiResult<string>> GetSmsLines() {
 			var tokenObj = await GetTokenAsync();
 			if ((tokenObj.Status != 200 && tokenObj.Status != 201) || !tokenObj.Content.IsSuccessful) {
-				return new ApiResult<SmsGetTokenResponse> {
+				return new ApiResult<string> {
 					Status = tokenObj.Status,
-					Content = tokenObj.Content
+					Content = tokenObj.Content.Message
 				};
 			}
 
@@ -65,10 +65,10 @@ namespace MyCity.API.Services.SMS {
 			//request.AddJsonBody(sendRequest);
 			var response = await client.ExecuteAsync(request);
 
-			var result = new ApiResult<SmsGetTokenResponse> {
+			var result = new ApiResult<string> {
 				Status = (int) response.StatusCode
 			};
-			result.Content = new SmsGetTokenResponse();
+			result.Content = "";
 
 			//var apiResponse = JsonConvert.DeserializeObject<SmsGetTokenResponse>(response.Content);
 			result.StrResult = response.Content;
