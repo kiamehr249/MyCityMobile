@@ -50,7 +50,7 @@ namespace MyCity.API.Services.SMS {
 
 		public async Task<ApiResult<string>> SendSms(SendSmsRequest entery) {
 			var tokenObj = await GetTokenAsync();
-			if (tokenObj.Status != 200 || !tokenObj.Content.IsSuccessful) {
+			if (tokenObj.Status == 200 || tokenObj.Status == 201 || !tokenObj.Content.IsSuccessful) {
 				return new ApiResult<string> {
 					Status = tokenObj.Status,
 					Content = tokenObj.Content != null ? tokenObj.Content.Message : "Sms Token Service have a problem"
