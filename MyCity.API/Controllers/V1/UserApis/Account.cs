@@ -350,6 +350,7 @@ namespace MyCity.API.Controllers.V1.UserApis {
 		}
 
 		[HttpPost]
+		[Authorize("UserAccess")]
 		public async Task<IActionResult> GetLines() {
 			var result = await _iSmsService.GetSmsLines();
 			return Ok(result);
