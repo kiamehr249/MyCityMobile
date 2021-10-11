@@ -50,19 +50,24 @@ namespace MyCity.API.Services.SMS {
 		}
 
 		public async Task<ApiResult<string>> GetSmsLines() {
-			var tokenObj = await GetTokenAsync();
-			if ((tokenObj.Status != 200 && tokenObj.Status != 201) || !tokenObj.Content.IsSuccessful) {
-				return new ApiResult<string> {
-					Status = tokenObj.Status,
-					Content = tokenObj.Content.Message
-				};
-			}
-
+			ApiResult<SmsGetTokenResponse> tokenObj;
 			var result = new ApiResult<string>();
+			try {
+				tokenObj = await GetTokenAsync();
+				if ((tokenObj.Status != 200 && tokenObj.Status != 201) || !tokenObj.Content.IsSuccessful) {
+					return new ApiResult<string> {
+						Status = tokenObj.Status,
+						Content = tokenObj.Content.Message
+					};
+				}
+			} catch (Exception ex) {
+				result.StrResult = "before sms line: " + ex.Message;
+				return result;
+			}
 
 			try {
 				RestClient client = new RestClient("http://RestfulSms.com/api/SMSLine");
-				client.AddDefaultHeader("x-sms-ir-secure-token", string.Format("{0}", tokenObj.Content.TokenKey));
+				client.AddDefaultHeader("x-sms-ir-secure-token", $"{tokenObj.Content.TokenKey}");
 				RestRequest request = new RestRequest();
 				request.Method = Method.GET;
 				//request.AddJsonBody(sendRequest);
@@ -78,9 +83,9 @@ namespace MyCity.API.Services.SMS {
 				result.StrResult = ex.Message;
 				return result;
 			}
-			
 
-			
+
+
 
 		}
 
