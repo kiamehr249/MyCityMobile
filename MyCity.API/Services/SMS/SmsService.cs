@@ -76,11 +76,6 @@ namespace MyCity.API.Services.SMS {
 				Status = (int) response.StatusCode
 			};
 
-			if (response.StatusCode != HttpStatusCode.OK) {
-				result.Content = "";
-				return result;
-			}
-
 			//var apiResponse = JsonConvert.DeserializeObject<SmsGetTokenResponse>(response.Content);
 			result.Content = response.Content;
 			return result;
