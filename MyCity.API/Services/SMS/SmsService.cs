@@ -3,6 +3,7 @@ using MyCiry.ViewModel.Proxey;
 using MyCiry.ViewModel.SMS;
 using Newtonsoft.Json;
 using RestSharp;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
@@ -14,8 +15,7 @@ namespace MyCity.API.Services.SMS {
 		Task<ApiResult<SmsGetTokenResponse>> SendSms(SendSmsRequest entery);
 	}
 
-	public class SmsService : ISmsService 
-	{
+	public class SmsService : ISmsService {
 		private readonly IConfiguration _config;
 
 		public SmsService(IConfiguration config) {
@@ -29,9 +29,9 @@ namespace MyCity.API.Services.SMS {
 			request.Method = Method.POST;
 			request.AddJsonBody(settings);
 			var response = await client.ExecuteAsync(request);
-			
 
-			var result = new ApiResult<SmsGetTokenResponse> { 
+
+			var result = new ApiResult<SmsGetTokenResponse> {
 				Status = (int) response.StatusCode
 			};
 
@@ -58,21 +58,29 @@ namespace MyCity.API.Services.SMS {
 				};
 			}
 
-			RestClient client = new RestClient("http://RestfulSms.com/api/SMSLine");
-			client.AddDefaultHeader("x-sms-ir-secure-token", string.Format("{0}", tokenObj.Content.TokenKey));
-			RestRequest request = new RestRequest();
-			request.Method = Method.GET;
-			//request.AddJsonBody(sendRequest);
-			var response = await client.ExecuteAsync(request);
+			var result = new ApiResult<string>();
 
-			var result = new ApiResult<string> {
-				Status = (int) response.StatusCode
-			};
-			result.Content = "";
+			try {
+				RestClient client = new RestClient("http://RestfulSms.com/api/SMSLine");
+				client.AddDefaultHeader("x-sms-ir-secure-token", string.Format("{0}", tokenObj.Content.TokenKey));
+				RestRequest request = new RestRequest();
+				request.Method = Method.GET;
+				//request.AddJsonBody(sendRequest);
+				var response = await client.ExecuteAsync(request);
 
-			//var apiResponse = JsonConvert.DeserializeObject<SmsGetTokenResponse>(response.Content);
-			result.StrResult = response.Content;
-			return result;
+				result.Status = (int) response.StatusCode;
+				result.Content = "";
+
+				//var apiResponse = JsonConvert.DeserializeObject<SmsGetTokenResponse>(response.Content);
+				result.StrResult = response.Content;
+				return result;
+			} catch (Exception ex) {
+				result.StrResult = ex.Message;
+				return result;
+			}
+			
+
+			
 
 		}
 
