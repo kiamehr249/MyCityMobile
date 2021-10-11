@@ -13,7 +13,7 @@ namespace MyCity.API.Services.SMS {
 	public interface ISmsService {
 		Task<ApiResult<SmsToken>> GetTokenAsync();
 		Task<ApiResult<SmsLineResponse>> GetSmsLines();
-		Task<ApiResult<BaseSmsResponse>> SendSms(SendSmsRequest entery);
+		Task<ApiResult<SendSmsResponse>> SendSms(SendSmsRequest entery);
 	}
 
 	public class SmsService : ISmsService {
@@ -80,29 +80,29 @@ namespace MyCity.API.Services.SMS {
 
 		}
 
-		public async Task<ApiResult<BaseSmsResponse>> SendSms(SendSmsRequest entery) {
+		public async Task<ApiResult<SendSmsResponse>> SendSms(SendSmsRequest entery) {
 			var tokenObj = await GetTokenAsync();
 			if ((tokenObj.Status != 200 && tokenObj.Status != 201) || !tokenObj.Content.IsSuccessful) {
-				return new ApiResult<BaseSmsResponse> {
+				return new ApiResult<SendSmsResponse> {
 					Status = tokenObj.Status,
-					Content = tokenObj.Content
+					StrResult = tokenObj.Content.Message
 				};
 			}
 
 			var smslines = await GetSmsLines();
 			if (smslines == null) {
-				return new ApiResult<BaseSmsResponse> {
+				return new ApiResult<SendSmsResponse> {
 					Status = 500,
-					Content = new BaseSmsResponse { 
+					Content = new SendSmsResponse { 
 						Message = "Lines Problem",
 						IsSuccessful = false
 					},
 					StrResult = ""
 				};
 			} else if (!smslines.Content.IsSuccessful || smslines.Content.SMSLines.Count == 0) {
-				return new ApiResult<BaseSmsResponse> {
+				return new ApiResult<SendSmsResponse> {
 					Status = smslines.Status,
-					Content = new BaseSmsResponse {
+					Content = new SendSmsResponse {
 						Message = smslines.Content.Message,
 						IsSuccessful = false
 					},
@@ -125,11 +125,11 @@ namespace MyCity.API.Services.SMS {
 			request.AddJsonBody(sendRequest);
 			var response = await client.ExecuteAsync(request);
 
-			var result = new ApiResult<BaseSmsResponse> {
+			var result = new ApiResult<SendSmsResponse> {
 				Status = (int) response.StatusCode
 			};
 
-			var apiResponse = JsonConvert.DeserializeObject<BaseSmsResponse>(response.Content);
+			var apiResponse = JsonConvert.DeserializeObject<SendSmsResponse>(response.Content);
 			result.Content = apiResponse;
 			result.StrResult = response.Content;
 			return result;
