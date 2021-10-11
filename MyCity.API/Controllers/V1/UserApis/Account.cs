@@ -351,7 +351,7 @@ namespace MyCity.API.Controllers.V1.UserApis {
 
 		[HttpPost]
 		public async Task<IActionResult> GetLines() {
-			//var result = await _iSmsService.GetSmsLines();
+			var result = await _iSmsService.GetSmsLines();
 			return Ok("check");
 		}
 

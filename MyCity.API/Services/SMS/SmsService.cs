@@ -50,20 +50,21 @@ namespace MyCity.API.Services.SMS {
 		}
 
 		public async Task<ApiResult<string>> GetSmsLines() {
-			ApiResult<SmsGetTokenResponse> tokenObj;
 			var result = new ApiResult<string>();
-			try {
-				tokenObj = await GetTokenAsync();
-				if ((tokenObj.Status != 200 && tokenObj.Status != 201) || !tokenObj.Content.IsSuccessful) {
-					return new ApiResult<string> {
-						Status = tokenObj.Status,
-						Content = tokenObj.Content.Message
-					};
-				}
-			} catch (Exception ex) {
-				result.StrResult = "before sms line: " + ex.Message;
-				return result;
+			var tokenObj = await GetTokenAsync();
+			if (tokenObj == null) {
+				return new ApiResult<string> {
+					Status = 401,
+					Content = "token gozid"
+				};
+			} else if ((tokenObj.Status != 200 && tokenObj.Status != 201) || !tokenObj.Content.IsSuccessful) {
+				return new ApiResult<string> {
+					Status = tokenObj.Status,
+					Content = tokenObj.Content.Message
+				};
 			}
+
+			
 
 			try {
 				RestClient client = new RestClient("http://RestfulSms.com/api/SMSLine");
