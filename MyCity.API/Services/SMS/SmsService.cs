@@ -68,6 +68,7 @@ namespace MyCity.API.Services.SMS {
 			var result = new ApiResult<SmsGetTokenResponse> {
 				Status = (int) response.StatusCode
 			};
+			result.Content = new SmsGetTokenResponse();
 
 			//var apiResponse = JsonConvert.DeserializeObject<SmsGetTokenResponse>(response.Content);
 			result.StrResult = response.Content;
