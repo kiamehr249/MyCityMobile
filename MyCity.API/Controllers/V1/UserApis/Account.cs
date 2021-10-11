@@ -86,7 +86,7 @@ namespace MyCity.API.Controllers.V1.UserApis {
 
 			// Returns the 'access_token' and the type in lower case
 			return Ok(new {
-				message = "دیافت موفق",
+				message = "دریافت موفق",
 				data = new {
 					create = nowTime.ToString(),
 					expair = nowTime.AddDays(lifeDaies).ToString(),
