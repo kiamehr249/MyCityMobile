@@ -64,8 +64,6 @@ namespace MyCity.API.Services.SMS {
 				};
 			}
 
-			
-
 			try {
 				RestClient client = new RestClient("http://RestfulSms.com/api/SMSLine");
 				client.AddDefaultHeader("x-sms-ir-secure-token", $"{tokenObj.Content.TokenKey}");
@@ -82,6 +80,7 @@ namespace MyCity.API.Services.SMS {
 				return result;
 			} catch (Exception ex) {
 				result.StrResult = ex.Message;
+				result.Status = 500;
 				return result;
 			}
 
