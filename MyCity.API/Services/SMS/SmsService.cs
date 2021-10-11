@@ -34,10 +34,14 @@ namespace MyCity.API.Services.SMS {
 				Status = (int) response.StatusCode
 			};
 
-			if (response.StatusCode != HttpStatusCode.OK) {
-				result.Content = null;
-				return result;
-			}
+			//if (response.StatusCode != HttpStatusCode.OK) {
+			//	result.Content = new SmsGetTokenResponse {
+			//		TokenKey = "",
+			//		IsSuccessful = false,
+			//		Message = response.Content
+			//	};
+			//	return result;
+			//}
 
 			var apiResponse = JsonConvert.DeserializeObject<SmsGetTokenResponse>(response.Content);
 			result.Content = apiResponse;
@@ -48,7 +52,7 @@ namespace MyCity.API.Services.SMS {
 			var tokenObj = await GetTokenAsync();
 			if (tokenObj.Status != 200 || !tokenObj.Content.IsSuccessful) {
 				return new ApiResult<string> {
-					Status = 401,
+					Status = tokenObj.Status,
 					Content = tokenObj.Content != null ? tokenObj.Content.Message : "Sms Token Service have a problem"
 				};
 			}
