@@ -349,5 +349,11 @@ namespace MyCity.API.Controllers.V1.UserApis {
 			return Ok(result);
 		}
 
+		[HttpPost]
+		public async Task<IActionResult> GetLines() {
+			var result = await _iSmsService.GetSmsLines();
+			return Ok(result);
+		}
+
 	}
 }

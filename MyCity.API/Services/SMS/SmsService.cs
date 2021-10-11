@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 namespace MyCity.API.Services.SMS {
 	public interface ISmsService {
 		Task<ApiResult<SmsGetTokenResponse>> GetTokenAsync();
+		Task<ApiResult<SmsGetTokenResponse>> GetSmsLines();
 		Task<ApiResult<SmsGetTokenResponse>> SendSms(SendSmsRequest entery);
 	}
 
@@ -46,6 +47,32 @@ namespace MyCity.API.Services.SMS {
 			var apiResponse = JsonConvert.DeserializeObject<SmsGetTokenResponse>(response.Content);
 			result.Content = apiResponse;
 			return result;
+		}
+
+		public async Task<ApiResult<SmsGetTokenResponse>> GetSmsLines() {
+			var tokenObj = await GetTokenAsync();
+			if ((tokenObj.Status != 200 && tokenObj.Status != 201) || !tokenObj.Content.IsSuccessful) {
+				return new ApiResult<SmsGetTokenResponse> {
+					Status = tokenObj.Status,
+					Content = tokenObj.Content
+				};
+			}
+
+			RestClient client = new RestClient("http://RestfulSms.com/api/SMSLine");
+			client.AddDefaultHeader("x-sms-ir-secure-token", string.Format("{0}", tokenObj.Content.TokenKey));
+			RestRequest request = new RestRequest();
+			request.Method = Method.GET;
+			//request.AddJsonBody(sendRequest);
+			var response = await client.ExecuteAsync(request);
+
+			var result = new ApiResult<SmsGetTokenResponse> {
+				Status = (int) response.StatusCode
+			};
+
+			//var apiResponse = JsonConvert.DeserializeObject<SmsGetTokenResponse>(response.Content);
+			result.StrResult = response.Content;
+			return result;
+
 		}
 
 		public async Task<ApiResult<SmsGetTokenResponse>> SendSms(SendSmsRequest entery) {
