@@ -137,7 +137,7 @@ namespace MyCity.API.Controllers.V1.UserApis {
 				if (result.Succeeded) {
 					await _userManager.AddToRoleAsync(user, "User");
 					await _iSmsService.SendSms(new MyCiry.ViewModel.SMS.SendSmsRequest {
-						Text = string.Format("کد فعال سازی: {0}", code),
+						Text = string.Format("کد فعال سازی شما در سامانه خدمات شهری خوی: {0}", code),
 						Mobile = user.PhoneNumber
 					});
 					return Ok(new {
@@ -162,7 +162,7 @@ namespace MyCity.API.Controllers.V1.UserApis {
 				await _userManager.UpdateAsync(user);
 
 				await _iSmsService.SendSms(new MyCiry.ViewModel.SMS.SendSmsRequest {
-					Text = string.Format("کد فعال سازی: {0}", code),
+					Text = string.Format("کد فعال سازی شما در سامانه خدمات شهری خوی: {0}", code),
 					Mobile = user.PhoneNumber
 				});
 				return Ok(new {
@@ -216,7 +216,7 @@ namespace MyCity.API.Controllers.V1.UserApis {
 				if (result.Succeeded) {
 					await _userManager.AddToRoleAsync(user, "Expert");
 					await _iSmsService.SendSms(new MyCiry.ViewModel.SMS.SendSmsRequest {
-						Text = string.Format("کد فعال سازی: {0}", code),
+						Text = string.Format("کد فعال سازی شما در سامانه خدمات شهری خوی: {0}", code),
 						Mobile = user.PhoneNumber
 					});
 					return Ok(new { IsDone = true });
@@ -234,7 +234,7 @@ namespace MyCity.API.Controllers.V1.UserApis {
 				user.Activated = false;
 				await _userManager.UpdateAsync(user);
 				await _iSmsService.SendSms(new MyCiry.ViewModel.SMS.SendSmsRequest {
-					Text = string.Format("کد فعال سازی: {0}", code),
+					Text = string.Format("کد فعال سازی شما در سامانه خدمات شهری خوی: {0}", code),
 					Mobile = user.PhoneNumber
 				});
 				return Ok(new {
