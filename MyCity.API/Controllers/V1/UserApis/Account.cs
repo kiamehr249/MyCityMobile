@@ -178,7 +178,7 @@ namespace MyCity.API.Controllers.V1.UserApis {
 
 		}
 
-		[HttpGet]
+		[HttpPost]
 		public async Task<IActionResult> ExpertRegister([FromBody] RegisterRequest request) {
 			if (string.IsNullOrEmpty(request.PhoneNumber)) {
 				return BadRequest(new { message = "شماره تلفن نمی تواند خالی باشد", data = new { } });
