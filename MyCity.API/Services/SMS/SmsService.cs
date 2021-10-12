@@ -88,11 +88,11 @@ namespace MyCity.API.Services.SMS {
 					StrResult = tokenObj.Content.Message
 				};
 			}
-
+			var settings = _config.GetSection("SMS").Get<SmsSetting>();
 			var sendRequest = new SendSmsApiRequest {
 				Messages = new List<string> { entery.Text },
 				MobileNumbers = new List<string> { entery.Mobile },
-				LineNumber = "10003342",
+				LineNumber = settings.LineNumber,
 				SendDateTime = "",
 				CanContinueInCaseOfError = "false"
 			};
