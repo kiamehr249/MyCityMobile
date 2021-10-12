@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using MyCiry.Utilities;
+using MyCiry.ViewModel.SMS;
 using MyCiry.ViewModel.Users;
 using MyCity.API.Services.SMS;
 using MyCity.DataModel;
@@ -348,11 +349,8 @@ namespace MyCity.API.Controllers.V1.UserApis {
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> SendSms() {
-			var result = await _iSmsService.SendSms(new MyCiry.ViewModel.SMS.SendSmsRequest {
-				Text = "test sms",
-				Mobile = "09120438779"
-			});
+		public async Task<IActionResult> SendSms([FromBody] SendSmsRequest request) {
+			var result = await _iSmsService.SendSms(request);
 			return Ok(result);
 		}
 
