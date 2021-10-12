@@ -197,11 +197,11 @@ namespace MyCity.API.Controllers.V1.UserApis {
 
 			request.PhoneNumber = request.PhoneNumber.PersianToEnglish();
 
-			var userCheck = await _userManager.FindByNameAsync(request.PhoneNumber);
+			var user = await _userManager.FindByNameAsync(request.PhoneNumber);
 			var code = Tools.RandomNumber(5);
 
-			if (userCheck == null) {
-				var user = new User {
+			if (user == null) {
+				user = new User {
 					UserName = request.PhoneNumber,
 					Email = "fake." + request.PhoneNumber + "@fmail.com",
 					PhoneNumber = request.PhoneNumber,
@@ -214,6 +214,10 @@ namespace MyCity.API.Controllers.V1.UserApis {
 				var result = await _userManager.CreateAsync(user, request.Password);
 				if (result.Succeeded) {
 					await _userManager.AddToRoleAsync(user, "Expert");
+					await _iSmsService.SendSms(new MyCiry.ViewModel.SMS.SendSmsRequest {
+						Text = string.Format("کد فعال سازی: {0}", code),
+						Mobile = user.PhoneNumber
+					});
 					return Ok(new { IsDone = true });
 				} else {
 					string messages = "";
@@ -225,10 +229,13 @@ namespace MyCity.API.Controllers.V1.UserApis {
 					return BadRequest(new { message = messages, data = "" });
 				}
 			} else {
-				userCheck.ActivationCode = code;
-				userCheck.Activated = false;
-				await _userManager.UpdateAsync(userCheck);
-
+				user.ActivationCode = code;
+				user.Activated = false;
+				await _userManager.UpdateAsync(user);
+				await _iSmsService.SendSms(new MyCiry.ViewModel.SMS.SendSmsRequest {
+					Text = string.Format("کد فعال سازی: {0}", code),
+					Mobile = user.PhoneNumber
+				});
 				return Ok(new {
 					message = "این کاربری قبلا ثبت نام است",
 					data = new {

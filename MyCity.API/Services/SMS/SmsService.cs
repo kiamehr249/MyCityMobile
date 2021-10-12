@@ -89,31 +89,10 @@ namespace MyCity.API.Services.SMS {
 				};
 			}
 
-			var smslines = await GetSmsLines();
-			if (smslines == null) {
-				return new ApiResult<SendSmsResponse> {
-					Status = 500,
-					Content = new SendSmsResponse { 
-						Message = "Lines Problem",
-						IsSuccessful = false
-					},
-					StrResult = ""
-				};
-			} else if (!smslines.Content.IsSuccessful || smslines.Content.SMSLines.Count == 0) {
-				return new ApiResult<SendSmsResponse> {
-					Status = smslines.Status,
-					Content = new SendSmsResponse {
-						Message = smslines.Content.Message,
-						IsSuccessful = false
-					},
-					StrResult = ""
-				};
-			}
-
 			var sendRequest = new SendSmsApiRequest {
 				Messages = new List<string> { entery.Text },
 				MobileNumbers = new List<string> { entery.Mobile },
-				LineNumber = smslines.Content.SMSLines.FirstOrDefault().LineNumber.ToString(),
+				LineNumber = "10003342",
 				SendDateTime = "",
 				CanContinueInCaseOfError = "false"
 			};
