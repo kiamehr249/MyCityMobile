@@ -1,10 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using MyCity.DataAccess;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MyCity.DataModel.AppModels {
 	public class MyDbContext : RootDbContext, IMyUnitOfWork {
@@ -18,10 +13,11 @@ namespace MyCity.DataModel.AppModels {
 		}
 
 		public DbSet<UserProfile> UserProfiles { get; set; }
-
+		public DbSet<AppRelease> AppReleases { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder builder) {
 			builder.ApplyConfiguration(new UserProfileMap());
+			builder.ApplyConfiguration(new AppReleaseMap());
 		}
 	}
 }

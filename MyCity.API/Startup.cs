@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using MyCity.API.Services.SMS;
 using MyCity.DataModel;
 using MyCity.DataModel.AppModels;
+using MyCity.DataModel.ToranjModels;
 
 namespace MyCity.API {
 	public class Startup {
@@ -35,7 +36,7 @@ namespace MyCity.API {
 
 			services.AddScoped<ISmsService, SmsService>();
 			services.AddScoped<IMyDataService, MyDataService>();
-
+			services.AddScoped<IToranjServices, ToranjServices>();
 
 
 			services.PostConfigure<CookieAuthenticationOptions>(IdentityConstants.ApplicationScheme,

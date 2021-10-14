@@ -19,11 +19,11 @@ namespace MyCity.API.Controllers.V1.NewsApis
         private readonly UserManager<User> _userManager;
         private readonly IToranjServices _iToranjServ;
 
-        public ToranjNews(UserManager<User> userManager, IConfiguration config)
+        public ToranjNews(UserManager<User> userManager, IConfiguration config, IToranjServices iToranjServ)
         {
             _userManager = userManager;
             _config = config;
-            _iToranjServ = new ToranjServices(_config);
+            _iToranjServ = iToranjServ;
         }
 
         [HttpPost]

@@ -21,11 +21,11 @@ namespace MyCity.API.Controllers.V1.Gallery
         private readonly UserManager<User> _userManager;
         private readonly IToranjServices _iToranjServ;
 
-        public ToranjGallery(UserManager<User> userManager, IConfiguration config)
+        public ToranjGallery(UserManager<User> userManager, IConfiguration config, IToranjServices iToranjServ)
         {
             _userManager = userManager;
             _config = config;
-            _iToranjServ = new ToranjServices(_config);
+            _iToranjServ = iToranjServ;
         }
 
         [HttpPost]
