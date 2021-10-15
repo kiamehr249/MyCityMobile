@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using MyCiry.Utilities;
+using MyCiry.ViewModel;
 using MyCiry.ViewModel.Users;
 using MyCity.DataModel;
 using System;
@@ -14,7 +16,7 @@ namespace MyCity.API.Controllers.V1.UserApis
 {
     [Route("/api/v1/[controller]/[action]")]
     //[Authorize("AdminAccess")]
-    public class UserManager : ControllerBase
+	public class UserManager : ControllerBase
     {
         private readonly IConfiguration _config;
         private readonly UserManager<User> _userManager;
@@ -105,5 +107,36 @@ namespace MyCity.API.Controllers.V1.UserApis
 
         }
 
-    }
+		[HttpPost]
+		public async Task<IActionResult> GetUsers([FromBody] Pager request) {
+
+			if (request.Part == 0) {
+				request.Part = 1;
+			}
+
+			if (request.Size == 0 || request.Size > 100) {
+				request.Size = 10;
+			}
+
+			int take = request.Size;
+			int skip = (request.Part - 1) * request.Part;
+
+
+			var users = await _userManager.Users.Skip(skip).Take(take).Select(x => new { 
+				x.Id,
+				x.UserName,
+				x.PhoneNumber,
+				x.AccountType,
+				x.Activated,
+				x.ActivationCode
+			}).ToListAsync();
+
+			return Ok(new { 
+				message = "لیست کاربران",
+				data = users 
+			});
+
+		}
+
+	}
 }

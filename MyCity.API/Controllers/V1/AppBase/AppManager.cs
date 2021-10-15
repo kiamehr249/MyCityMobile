@@ -63,9 +63,8 @@ namespace MyCity.API.Controllers.V1.AppBase {
 		}
 
 		[HttpGet]
-		[Authorize("AdminAccess")]
 		public async Task<IActionResult> GetVersion() {
-			var user = await _userManager.FindByIdAsync(HttpContext.User.Claims.FirstOrDefault(c => c.Type == "Id").Value);
+			//var user = await _userManager.FindByIdAsync(HttpContext.User.Claims.FirstOrDefault(c => c.Type == "Id").Value);
 
 			var data = await _iMyDataServ.iAppReleaseServ.QueryMaker(y => y.Where(x => true)).OrderByDescending(x => x.Id).Select(x => new { 
 				x.Id,
