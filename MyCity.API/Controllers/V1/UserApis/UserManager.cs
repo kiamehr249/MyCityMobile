@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace MyCity.API.Controllers.V1.UserApis
 {
     [Route("/api/v1/[controller]/[action]")]
-    [Authorize("AdminAccess")]
+    //[Authorize("AdminAccess")]
     public class UserManager : ControllerBase
     {
         private readonly IConfiguration _config;
