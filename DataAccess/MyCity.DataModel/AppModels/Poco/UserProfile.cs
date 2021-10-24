@@ -15,6 +15,6 @@ namespace MyCity.DataModel.AppModels {
 		public DateTime CreateDate { get; set; }
 		public DateTime? LastModifyDate { get; set; }
 
-		public virtual User User { get; set; }
+		public virtual AppUser User { get; set; }
 	}
 }

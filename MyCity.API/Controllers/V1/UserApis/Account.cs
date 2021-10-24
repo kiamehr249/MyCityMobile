@@ -131,7 +131,9 @@ namespace MyCity.API.Controllers.V1.UserApis {
 					PhoneNumberConfirmed = true,
 					AccountType = AccountType.AppUser,
 					ActivationCode = code,
-					Activated = false
+					Activated = false,
+					CreateDate = DateTime.Now,
+					ExpertStatus = ExpertStatus.NotExpert
 				};
 				var result = await _userManager.CreateAsync(user, request.Password);
 				if (result.Succeeded) {
@@ -159,6 +161,7 @@ namespace MyCity.API.Controllers.V1.UserApis {
 			} else {
 				user.ActivationCode = code;
 				user.Activated = false;
+				user.LastModify = DateTime.Now;
 				await _userManager.UpdateAsync(user);
 
 				await _iSmsService.SendSms(new MyCiry.ViewModel.SMS.SendSmsRequest {
@@ -210,7 +213,9 @@ namespace MyCity.API.Controllers.V1.UserApis {
 					PhoneNumberConfirmed = true,
 					AccountType = AccountType.Expert,
 					ActivationCode = code,
-					Activated = false
+					Activated = false,
+					CreateDate = DateTime.Now,
+					ExpertStatus = ExpertStatus.Requested
 				};
 				var result = await _userManager.CreateAsync(user, request.Password);
 				if (result.Succeeded) {
@@ -232,6 +237,7 @@ namespace MyCity.API.Controllers.V1.UserApis {
 			} else {
 				user.ActivationCode = code;
 				user.Activated = false;
+				user.LastModify = DateTime.Now;
 				await _userManager.UpdateAsync(user);
 				await _iSmsService.SendSms(new MyCiry.ViewModel.SMS.SendSmsRequest {
 					Text = string.Format("کد فعال سازی شما در سامانه خدمات شهری خوی: {0}", code),
@@ -264,6 +270,7 @@ namespace MyCity.API.Controllers.V1.UserApis {
 			}
 
 			user.Activated = true;
+			user.LastLogin = DateTime.Now;
 			await _userManager.UpdateAsync(user);
 
 			return Ok(new {
@@ -302,6 +309,8 @@ namespace MyCity.API.Controllers.V1.UserApis {
 			if (!IsEdit) {
 				theProfile.CreateDate = DateTime.Now;
 				_iMyDataServ.iUserProfileServ.Add(theProfile);
+			} else {
+				theProfile.LastModifyDate = DateTime.Now;
 			}
 
 			await _iMyDataServ.iUserProfileServ.SaveChangesAsync();

@@ -12,10 +12,14 @@ namespace MyCity.DataModel.AppModels {
 			optionsBuilder.UseLazyLoadingProxies();
 		}
 
+		public DbSet<AppUser> Users { get; set; }
+
 		public DbSet<UserProfile> UserProfiles { get; set; }
 		public DbSet<AppRelease> AppReleases { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder builder) {
+			builder.ApplyConfiguration(new AppUserMap());
+
 			builder.ApplyConfiguration(new UserProfileMap());
 			builder.ApplyConfiguration(new AppReleaseMap());
 		}

@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using MyCity.DataAccess;
 
 namespace MyCity.DataModel.ToranjModels
@@ -21,14 +21,24 @@ namespace MyCity.DataModel.ToranjModels
         public DbSet<Album> Albums { get; set; }
         public DbSet<Media> Medias { get; set; }
 
+		public DbSet<PollCategory> PollCategories { get; set; }
+		public DbSet<Poll> Polls { get; set; }
+		public DbSet<PollQuestion> PollQuestions { get; set; }
+		public DbSet<PollQuestionAnswer> PollQuestionAnswers { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder builder)
+
+		protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfiguration(new NewsAgencyMap());
             builder.ApplyConfiguration(new NewsMap());
             builder.ApplyConfiguration(new GalleryMap());
             builder.ApplyConfiguration(new AlbumMap());
             builder.ApplyConfiguration(new MediaMap());
-        }
+
+			builder.ApplyConfiguration(new PollCategoryMap());
+			builder.ApplyConfiguration(new PollMap());
+			builder.ApplyConfiguration(new PollQuestionMap());
+			builder.ApplyConfiguration(new PollQuestionAnswerMap());
+		}
     }
 }

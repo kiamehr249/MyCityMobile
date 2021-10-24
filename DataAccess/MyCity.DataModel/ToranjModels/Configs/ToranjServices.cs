@@ -9,7 +9,12 @@ namespace MyCity.DataModel.ToranjModels
         IGalleryService iGalleryServ { get; set; }
         IAlbumService iAlbumServ { get; set; }
         IMediaService iMediaServ { get; set; }
-    }
+		IPollCategoryService iPollCategoryServ { get; set; }
+		IPollService iPollServ { get; set; }
+		IPollQuestionService iPollQuestionServ { get; set; }
+		IPollQuestionAnswerService iPollQuestionAnswerServ { get; set; }
+
+	}
 
     public class ToranjServices : IToranjServices
     {
@@ -18,8 +23,12 @@ namespace MyCity.DataModel.ToranjModels
         public IGalleryService iGalleryServ { get; set; }
         public IAlbumService iAlbumServ { get; set; }
         public IMediaService iMediaServ { get; set; }
+		public IPollCategoryService iPollCategoryServ { get; set; }
+		public IPollService iPollServ { get; set; }
+		public IPollQuestionService iPollQuestionServ { get; set; }
+		public IPollQuestionAnswerService iPollQuestionAnswerServ { get; set; }
 
-        public ToranjServices(IConfiguration config)
+		public ToranjServices(IConfiguration config)
         {
             IToranjUnitOfWork uow = new ToranjDbContext(config.GetConnectionString("ToranjDb"));
             iNewsAgencyServ = new NewsAgencyService(uow);
@@ -27,6 +36,12 @@ namespace MyCity.DataModel.ToranjModels
             iGalleryServ = new GalleryService(uow);
             iAlbumServ = new AlbumService(uow);
             iMediaServ = new MediaService(uow);
-        }
+
+			iPollCategoryServ = new PollCategoryService(uow);
+			iPollServ = new PollService(uow);
+			iPollQuestionServ = new PollQuestionService(uow);
+			iPollQuestionAnswerServ = new PollQuestionAnswerService(uow);
+
+		}
     }
 }

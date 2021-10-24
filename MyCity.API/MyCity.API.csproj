@@ -34,8 +34,4 @@
     <ProjectReference Include="..\ViewModels\MyCiry.ViewModel\MyCiry.ViewModel.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\V1\Survey\" />
-  </ItemGroup>
-
 </Project>

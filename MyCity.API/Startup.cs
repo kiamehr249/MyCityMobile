@@ -73,6 +73,14 @@ namespace MyCity.API {
 				};
 			});
 
+			services.AddCors(options =>
+			{
+				options.AddDefaultPolicy(
+					builder => {
+						builder.WithOrigins("*").AllowAnyHeader().AllowAnyMethod();
+					});
+			});
+
 			services.AddAuthorization(options => options.AddPolicy("AdminAccess", policy => {
 				policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
 				policy.RequireAuthenticatedUser();
@@ -113,6 +121,8 @@ namespace MyCity.API {
 			app.UseStaticFiles();
 
 			app.UseRouting();
+
+			app.UseCors();
 
 			app.UseAuthentication();
 			app.UseAuthorization();
