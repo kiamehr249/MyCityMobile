@@ -313,6 +313,154 @@ namespace MyCity.API.Controllers.V1.UserApis
 
 		}
 
+		[HttpGet]
+		public async Task<IActionResult> GetTestUsers() {
+
+			var query = _iMyDataServ.iAppUserServ.QueryMaker(y => y.Where(x => true));
+
+			var totalCount = await query.CountAsync();
+
+			var users = await query.Include(x => x.UserProfiles).Skip(0).Take(20).Select(x => new {
+				x.Id,
+				x.UserName,
+				x.PhoneNumber,
+				x.AccountType,
+				x.Activated,
+				x.ActivationCode,
+				x.ExpertStatus,
+				x.IsBlocked,
+				x.CreateDate,
+				x.LastModify,
+				x.LastLogin,
+				Profile = x.UserProfiles.Select(y => new {
+					y.Id,
+					y.FirstName,
+					y.LastName,
+					y.Avatar,
+					y.BirthDate,
+					y.Address,
+					y.Email,
+					y.NationalCode,
+					y.CreateDate,
+					y.LastModifyDate
+				})
+			}).ToListAsync();
+
+			return Ok(new {
+				message = "لیست کاربران",
+				count = totalCount,
+				data = users
+			});
+
+		}
+
+		[HttpGet]
+		public async Task<IActionResult> GetRateSettings() {
+
+			var query = _iMyDataServ.iRatingSettingServ.QueryMaker(y => y.Where(x => true));
+
+			var totalCount = await query.CountAsync();
+
+			var settings = await query.Skip(0).Take(20).Select(x => new {
+				x.Id,
+				x.Coefficient,
+				x.RateType,
+				x.PerCount
+			}).ToListAsync();
+
+			return Ok(new {
+				message = "تنظیمات امتیازها",
+				count = totalCount,
+				data = settings
+			});
+
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> SetRateSetting([FromBody] RatingSettingRequest request) {
+
+			var item = new RatingSetting();
+
+			var requestType = (RateType) request.RateType;
+			var readyItem = _iMyDataServ.iRatingSettingServ.Count(x => x.RateType == requestType);
+			if(readyItem > 0 && request.Id == 0) {
+				return BadRequest(new { message = "تنظیماتی با این نوع وجود دارد." });
+			}
+
+			if (request.Id > 0) {
+				item = await _iMyDataServ.iRatingSettingServ.FindAsync(x => x.Id == request.Id);
+			}
+
+			item.Coefficient = request.Coefficient;
+			item.PerCount = request.PerCount;
+			item.RateType = (RateType) request.RateType;
+
+			if (request.Id == 0) {
+				_iMyDataServ.iRatingSettingServ.Add(item);
+			}
+
+			return Ok(new {
+				message = "افزودن تنظیم",
+				data = item
+			});
+
+		}
+
+		[HttpPost]
+		[Authorize("UserAccess")]
+		public async Task<IActionResult> SetUserRate([FromBody] UserRateRequest request) {
+			var user = await _userManager.FindByIdAsync(HttpContext.User.Claims.FirstOrDefault(c => c.Type == "Id").Value);
+			var rateType = (RateType) request.RateType;
+			var setting = await _iMyDataServ.iRatingSettingServ.FindAsync(x => x.RateType == rateType);
+
+			if (setting == null)
+				return BadRequest(new { message = "تنظیمات سیستم موجود نیست" });
+
+			var recordCount = await _iMyDataServ.iUserRateServ.CountAsync(x => x.ReferenceId == request.ReferenceId && x.RateType == rateType);
+			if (recordCount > 0) {
+				return BadRequest(new { message = "این آیتم قبلا ثبت شده است" });
+			}
+
+
+			var item = new UserRate {
+				UserId = user.Id,
+				RateType = rateType,
+				RateAmount = setting.Coefficient,
+				ReferenceId = request.ReferenceId,
+				ReferenceTitle = request.ReferenceTitle,
+				Duration = request.Duration,
+				CraeteDate = DateTime.Now
+			};
+			_iMyDataServ.iUserRateServ.Add(item);
+			await _iMyDataServ.iUserRateServ.SaveChangesAsync();
+
+			return Ok(new { 
+				message = "ثبت موفق",
+				data = setting.Coefficient
+			});
+		}
+
+		[HttpGet]
+		[Authorize("UserAccess")]
+		public async Task<IActionResult> GetUserRate() {
+			var user = await _userManager.FindByIdAsync(HttpContext.User.Claims.FirstOrDefault(c => c.Type == "Id").Value);
+
+			var mediaSum = _iMyDataServ.iUserRateServ.QueryMaker(y => y.Where(x => x.RateType == RateType.Media)).Sum(x => x.RateAmount);
+
+			var pollSum = _iMyDataServ.iUserRateServ.QueryMaker(y => y.Where(x => x.RateType == RateType.Poll)).Sum(x => x.RateAmount);
+
+			var newsSum = _iMyDataServ.iUserRateServ.QueryMaker(y => y.Where(x => x.RateType == RateType.News)).Sum(x => x.RateAmount);
+
+			return Ok(new { 
+				message = "",
+				data = new {
+					mediaSum,
+					pollSum,
+					newsSum
+				}
+			});
+		}
+
 
 	}
 }

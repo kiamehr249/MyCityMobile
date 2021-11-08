@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using MyCiry.ViewModel;
 using MyCity.DataModel;
+using MyCity.DataModel.AppModels;
 using MyCity.DataModel.ToranjModels;
 using System;
 using System.Collections.Generic;
@@ -18,11 +19,18 @@ namespace MyCity.API.Controllers.V1.PollApis {
 		private readonly IConfiguration _config;
 		private readonly UserManager<User> _userManager;
 		private readonly IToranjServices _iToranjServ;
+		private readonly IMyDataService _iMyDataServ;
 
-		public ToranjPoll(UserManager<User> userManager, IConfiguration config, IToranjServices iToranjServ) {
+		public ToranjPoll(
+			UserManager<User> userManager, 
+			IConfiguration config, 
+			IToranjServices iToranjServ,
+			IMyDataService iMyDataServ
+			) {
 			_userManager = userManager;
 			_config = config;
 			_iToranjServ = iToranjServ;
+			_iMyDataServ = iMyDataServ;
 		}
 
 		[HttpPost]
@@ -117,14 +125,29 @@ namespace MyCity.API.Controllers.V1.PollApis {
 			var theQuestion = await _iToranjServ.iPollQuestionServ.FindAsync(x => x.ID == request.QuestionId);
 			theQuestion.SelectedCount = theQuestion.SelectedCount + 1;
 
-			_iToranjServ.iPollQuestionAnswerServ.Add(new PollQuestionAnswer {
+			var answare = new PollQuestionAnswer {
 				PollID = request.PollId,
 				QuestionID = request.QuestionId,
 				UserAnswer = user.Id.ToString(),
 				UserIP = HttpContext.Connection.RemoteIpAddress.ToString()
-			});
+			};
+
+			_iToranjServ.iPollQuestionAnswerServ.Add(answare);
 
 			await _iToranjServ.iPollQuestionAnswerServ.SaveChangesAsync();
+
+			var rateSetting = await _iMyDataServ.iRatingSettingServ.FindAsync(x => x.RateType == RateType.Poll);
+			_iMyDataServ.iUserRateServ.Add(new UserRate {
+				UserId = user.Id,
+				RateType = RateType.Poll,
+				RateAmount = rateSetting.Coefficient,
+				ReferenceId = answare.ID,
+				ReferenceTitle = theQuestion.Title,
+				Duration = 0,
+				CraeteDate = DateTime.Now
+			});
+
+			await _iMyDataServ.iUserRateServ.SaveChangesAsync();
 
 			return Ok(new {
 				Message = "پاسخ با موفقیت ثبت شد",

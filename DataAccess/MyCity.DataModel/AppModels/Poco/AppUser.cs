@@ -20,5 +20,6 @@ namespace MyCity.DataModel.AppModels {
 		public DateTime? LastLogin { get; set; }
 
 		public virtual ICollection<UserProfile> UserProfiles { get; set; }
+		public virtual ICollection<UserRate> UserRates { get; set; }
 	}
 }

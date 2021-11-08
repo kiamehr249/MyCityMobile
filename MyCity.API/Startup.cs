@@ -103,6 +103,7 @@ namespace MyCity.API {
 				options.AutomaticAuthentication = true;
 			});
 
+			services.AddSwaggerGen();
 
 			services.AddRazorPages();
 			services.AddDirectoryBrowser();
@@ -119,6 +120,9 @@ namespace MyCity.API {
 
 			app.UseHttpsRedirection();
 			app.UseStaticFiles();
+
+			app.UseSwagger();
+			app.UseSwaggerUI();
 
 			app.UseRouting();
 

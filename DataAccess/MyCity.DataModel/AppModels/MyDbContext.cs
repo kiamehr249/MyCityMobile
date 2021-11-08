@@ -16,12 +16,16 @@ namespace MyCity.DataModel.AppModels {
 
 		public DbSet<UserProfile> UserProfiles { get; set; }
 		public DbSet<AppRelease> AppReleases { get; set; }
+		public DbSet<RatingSetting> RatingSettings { get; set; }
+		public DbSet<UserRate> UserRates { get; set; }
+		
 
 		protected override void OnModelCreating(ModelBuilder builder) {
 			builder.ApplyConfiguration(new AppUserMap());
-
 			builder.ApplyConfiguration(new UserProfileMap());
 			builder.ApplyConfiguration(new AppReleaseMap());
+			builder.ApplyConfiguration(new RatingSettingMap());
+			builder.ApplyConfiguration(new UserRateMap());
 		}
 	}
 }
