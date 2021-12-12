@@ -204,7 +204,7 @@ namespace MyCity.API.Controllers.V1.Gallery
 			}
 			var albumIds = await _iToranjServ.iAlbumServ.QueryMaker(y => y.Where(x => x.Enabled && x.GalleryID == galleryId)).Select(x => x.ID).ToListAsync();
 
-			var data = await _iToranjServ.iMediaServ.QueryMaker(x => x.Where(y => y.Enabled && y.MediaType == request.MediaType && albumIds.Contains(y.AlbumID))).OrderBy(x => x.Ordering).Skip(skip).Take(take).Select(x => new {
+			var data = await _iToranjServ.iMediaServ.QueryMaker(x => x.Where(y => y.Enabled && y.MediaType == request.MediaType && albumIds.Contains(y.AlbumID))).OrderByDescending(x => x.Ordering).Skip(skip).Take(take).Select(x => new {
 				x.ID,
 				x.AlbumID,
 				x.Title,

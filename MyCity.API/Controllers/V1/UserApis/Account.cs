@@ -273,10 +273,21 @@ namespace MyCity.API.Controllers.V1.UserApis {
 			user.LastLogin = DateTime.Now;
 			await _userManager.UpdateAsync(user);
 
+			int lifeDaies = Convert.ToInt32(_config["TokenOptions:LifeDaies"]);
+			var key = _config["TokenOptions:Key"];
+			var roles = await _userManager.GetRolesAsync(user);
+			var token = Tools.GenerateToken(user, roles, lifeDaies, key);
+
 			return Ok(new {
 				message = "فعال سازی موفق",
 				data = new {
-					isDone = true
+					isDone = true,
+					token = new {
+						create = DateTime.Now.ToString(),
+						expair = DateTime.Now.AddDays(lifeDaies).ToString(),
+						token = token,
+						type = "bearer"
+					}
 				}
 			});
 		}

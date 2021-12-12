@@ -1,8 +1,12 @@
+using Microsoft.IdentityModel.Tokens;
+using MyCity.DataModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Reflection;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -74,6 +78,36 @@ namespace MyCiry.Utilities
             builder.Append(key);
             return lowerCase ? builder.ToString().ToLower() : builder.ToString();
         }
+
+
+		public static string GenerateToken(User user, IList<string> roles, int lifeTime, string key) {
+			var userClaims = new List<Claim>
+				{
+					new Claim("Id", user.Id.ToString()),
+					new Claim(ClaimTypes.Name, user.UserName)
+				};
+
+			foreach (var role in roles) {
+				userClaims.Add(new Claim(ClaimTypes.Role, role));
+			}
+
+			int lifeDaies = lifeTime;
+			DateTime nowTime = DateTime.Now;
+			DateTime nowUtcTime = DateTime.UtcNow;
+			// Creates the signed JWT
+			var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+			var tokenHandler = new JwtSecurityTokenHandler();
+			var tokenDescriptor = new SecurityTokenDescriptor {
+				Subject = new ClaimsIdentity(userClaims),
+				Expires = nowUtcTime.AddDays(lifeDaies),
+				Issuer = "ysp24.ir",
+				Audience = "ysp24.ir",
+				SigningCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256Signature)
+			};
+			var token = tokenHandler.CreateToken(tokenDescriptor);
+			var accessToken = tokenHandler.WriteToken(token);
+			return accessToken;
+		}
 
 
     }
