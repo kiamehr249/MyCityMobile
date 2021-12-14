@@ -104,17 +104,17 @@ namespace MyCity.API.Controllers.V1.UserApis {
 				return BadRequest(new { message = "شماره تلفن نمی تواند خالی باشد", data = new { } });
 			}
 
-			if (string.IsNullOrEmpty(request.Password)) {
-				return BadRequest(new { message = "رمز عبور نمی تواند خالی باشد", data = new { } });
-			}
+			//if (string.IsNullOrEmpty(request.Password)) {
+			//	return BadRequest(new { message = "رمز عبور نمی تواند خالی باشد", data = new { } });
+			//}
 
-			if (string.IsNullOrEmpty(request.ConfirmPassword)) {
-				return BadRequest(new { message = "تکرار رمز عبور نباید خالی باشد", data = new { } });
-			}
+			//if (string.IsNullOrEmpty(request.ConfirmPassword)) {
+			//	return BadRequest(new { message = "تکرار رمز عبور نباید خالی باشد", data = new { } });
+			//}
 
-			if (request.Password != request.ConfirmPassword) {
-				return BadRequest(new { message = "رمز عبور و تکرار یکسان نمی باشد", data = new { } });
-			}
+			//if (request.Password != request.ConfirmPassword) {
+			//	return BadRequest(new { message = "رمز عبور و تکرار یکسان نمی باشد", data = new { } });
+			//}
 
 			request.PhoneNumber = request.PhoneNumber.PersianToEnglish();
 
@@ -135,7 +135,7 @@ namespace MyCity.API.Controllers.V1.UserApis {
 					CreateDate = DateTime.Now,
 					ExpertStatus = ExpertStatus.NotExpert
 				};
-				var result = await _userManager.CreateAsync(user, request.Password);
+				var result = await _userManager.CreateAsync(user, "c@" + request.PhoneNumber);
 				if (result.Succeeded) {
 					await _userManager.AddToRoleAsync(user, "User");
 					await _iSmsService.SendSms(new MyCiry.ViewModel.SMS.SendSmsRequest {
@@ -187,17 +187,17 @@ namespace MyCity.API.Controllers.V1.UserApis {
 				return BadRequest(new { message = "شماره تلفن نمی تواند خالی باشد", data = new { } });
 			}
 
-			if (string.IsNullOrEmpty(request.Password)) {
-				return BadRequest(new { message = "رمز عبور نمی تواند خالی باشد", data = new { } });
-			}
+			//if (string.IsNullOrEmpty(request.Password)) {
+			//	return BadRequest(new { message = "رمز عبور نمی تواند خالی باشد", data = new { } });
+			//}
 
-			if (string.IsNullOrEmpty(request.ConfirmPassword)) {
-				return BadRequest(new { message = "تکرار رمز عبور نباید خالی باشد", data = new { } });
-			}
+			//if (string.IsNullOrEmpty(request.ConfirmPassword)) {
+			//	return BadRequest(new { message = "تکرار رمز عبور نباید خالی باشد", data = new { } });
+			//}
 
-			if (request.Password != request.ConfirmPassword) {
-				return BadRequest(new { message = "رمز عبور و تکرار یکسان نمی باشد", data = new { } });
-			}
+			//if (request.Password != request.ConfirmPassword) {
+			//	return BadRequest(new { message = "رمز عبور و تکرار یکسان نمی باشد", data = new { } });
+			//}
 
 			request.PhoneNumber = request.PhoneNumber.PersianToEnglish();
 
@@ -217,7 +217,7 @@ namespace MyCity.API.Controllers.V1.UserApis {
 					CreateDate = DateTime.Now,
 					ExpertStatus = ExpertStatus.Requested
 				};
-				var result = await _userManager.CreateAsync(user, request.Password);
+				var result = await _userManager.CreateAsync(user, "c@" + request.PhoneNumber);
 				if (result.Succeeded) {
 					await _userManager.AddToRoleAsync(user, "Expert");
 					await _iSmsService.SendSms(new MyCiry.ViewModel.SMS.SendSmsRequest {
