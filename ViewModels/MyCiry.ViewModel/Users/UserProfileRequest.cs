@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Http;
-
 namespace MyCiry.ViewModel.Users {
 	public class UserProfileRequest {
 		public int Id { get; set; }
@@ -10,6 +8,5 @@ namespace MyCiry.ViewModel.Users {
 		public string Address { get; set; }
 		public string Email { get; set; }
 		public int Grade { get; set; }
-		public IFormFile Avatar { get; set; }
 	}
 }

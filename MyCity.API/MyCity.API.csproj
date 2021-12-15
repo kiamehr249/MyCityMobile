@@ -35,4 +35,8 @@
     <ProjectReference Include="..\ViewModels\MyCiry.ViewModel\MyCiry.ViewModel.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\files\user\avatar\" />
+  </ItemGroup>
+
 </Project>

@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using MyCiry.Utilities;
+using MyCiry.ViewModel;
 using MyCiry.ViewModel.SMS;
 using MyCiry.ViewModel.Users;
 using MyCity.API.Services.SMS;
@@ -26,13 +28,16 @@ namespace MyCity.API.Controllers.V1.UserApis {
 		private readonly RoleManager<Role> _roleManager;
 		private readonly ISmsService _iSmsService;
 		private readonly IMyDataService _iMyDataServ;
+		private readonly IWebHostEnvironment _hosting;
 
 		public Account(
 			UserManager<User> userManager, IConfiguration config,
+			IWebHostEnvironment hostingEnvironment,
 			SignInManager<User> signInManager, RoleManager<Role> roleManager,
 			ISmsService iSmsService, IMyDataService iMyDataServ
 			) {
 			_userManager = userManager;
+			_hosting = hostingEnvironment;
 			_signInManager = signInManager;
 			_roleManager = roleManager;
 			_config = config;
@@ -90,7 +95,7 @@ namespace MyCity.API.Controllers.V1.UserApis {
 				message = "دریافت موفق",
 				data = new {
 					create = nowTime.ToString(),
-					expair = nowTime.AddDays(lifeDaies).ToString(),
+					expire = nowTime.AddDays(lifeDaies).ToString(),
 					token = accessToken,
 					type = "bearer"
 				}
@@ -284,7 +289,7 @@ namespace MyCity.API.Controllers.V1.UserApis {
 					isDone = true,
 					token = new {
 						create = DateTime.Now.ToString(),
-						expair = DateTime.Now.AddDays(lifeDaies).ToString(),
+						expire = DateTime.Now.AddDays(lifeDaies).ToString(),
 						token = token,
 						type = "bearer"
 					}
@@ -352,6 +357,7 @@ namespace MyCity.API.Controllers.V1.UserApis {
 			return Ok(new {
 				Message = "اطلاعات پروفایل کاربری",
 				Data = new {
+					UserId = user.Id,
 					theProfile.Id,
 					theProfile.FirstName,
 					theProfile.LastName,
@@ -360,9 +366,69 @@ namespace MyCity.API.Controllers.V1.UserApis {
 					theProfile.Address,
 					theProfile.BirthDate,
 					theProfile.CreateDate,
-					Grade = (int) theProfile.Grade,
+					Grade = theProfile.Grade != null ? (int) theProfile.Grade : 0,
 					theProfile.Avatar,
 					theProfile.LastModifyDate
+				}
+			});
+
+		}
+
+		[HttpPost]
+		[Authorize("UserAccess")]
+		public async Task<IActionResult> SetUserAvatat([FromForm]UserAvatatRequest request) {
+
+			var user = await _userManager.FindByIdAsync(HttpContext.User.Claims.FirstOrDefault(c => c.Type == "Id").Value);
+			var theProfile = await _iMyDataServ.iUserProfileServ.FindAsync(x => x.UserId == user.Id);
+
+			if (request.Avatar == null) {
+				return BadRequest(new { message = "هیچ فایلی انتخاب نشده است." });
+			}
+
+			if (theProfile != null && !string.IsNullOrEmpty(theProfile.Avatar)) {
+				Tools.RemoveFile(new RemoveFileRequest { 
+					RootPath = _hosting.ContentRootPath,
+					FilePath = theProfile.Avatar
+				});
+			}
+
+			string image = string.Empty;
+			if (request.Avatar != null && request.Avatar.Length > 0) {
+				var saveImage = await Tools.SaveFileAsync(new SaveFileRequest {
+					File = request.Avatar,
+					RootPath = _hosting.ContentRootPath,
+					UnitPath = _config.GetSection("FileRoot:UserAvatar").Value
+				});
+
+				if (!saveImage.Success) {
+					return StatusCode(405, new { message = "آپلود تصویر انجام نشد. مجدد تلاش کنید." });
+				}
+
+				image = saveImage.FilePath;
+			}
+
+			if(theProfile == null) {
+				theProfile = new UserProfile();
+				theProfile.UserId = user.Id;
+				theProfile.CreateDate = DateTime.Now;
+			} else {
+				theProfile.LastModifyDate = DateTime.Now;
+			}
+
+			theProfile.Avatar = image;
+
+			if (theProfile.Id == 0) {
+				_iMyDataServ.iUserProfileServ.Add(theProfile);
+			}
+
+			await _iMyDataServ.iUserProfileServ.SaveChangesAsync();
+
+			return Ok(new {
+				Message = "تصویر چهره کاربر",
+				Data = new {
+					UserId = user.Id,
+					ProfileId = theProfile.Id,
+					Avatar = image
 				}
 			});
 

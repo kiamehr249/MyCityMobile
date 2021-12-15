@@ -1,9 +1,11 @@
 using Microsoft.IdentityModel.Tokens;
+using MyCiry.ViewModel;
 using MyCity.DataModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Claims;
@@ -110,5 +112,49 @@ namespace MyCiry.Utilities
 		}
 
 
-    }
+		public static async Task<SaveFileResponse> SaveFileAsync(SaveFileRequest request) {
+			var result = new SaveFileResponse();
+			if (request.File == null) {
+				result.Success = false;
+				result.Message = "File request is empty";
+				return result;
+			}
+
+			if (string.IsNullOrWhiteSpace(request.RootPath)) {
+				result.Success = false;
+				result.Message = "Root Path is empty";
+				return result;
+			}
+
+			if (request.File.Length > 0) {
+				var fileName = Path.GetFileName(request.File.FileName);
+				var newName = RandomString(6) + "_" + fileName.Replace(" ", "");
+				var folderPath = request.RootPath + "/wwwroot/" + request.UnitPath;
+
+				if (!Directory.Exists(folderPath)) {
+					Directory.CreateDirectory(folderPath);
+				}
+
+				using (var stream = System.IO.File.Create(folderPath + "/" + newName)) {
+					await request.File.CopyToAsync(stream);
+					result.FilePath = request.UnitPath + "/" + newName;
+					result.FullPath = folderPath + "/" + newName;
+				}
+			}
+
+			result.Success = true;
+			result.Message = "Save Successed";
+
+			return result;
+		}
+
+		public static void RemoveFile(RemoveFileRequest request) {
+			if (File.Exists(request.RootPath + "/wwwroot/" + request.FilePath)) {
+				File.Delete(request.RootPath + "/wwwroot/" + request.FilePath);
+			}
+
+		}
+
+
+	}
 }
