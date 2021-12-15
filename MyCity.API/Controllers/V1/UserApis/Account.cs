@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -29,6 +30,7 @@ namespace MyCity.API.Controllers.V1.UserApis {
 		private readonly ISmsService _iSmsService;
 		private readonly IMyDataService _iMyDataServ;
 		private readonly IWebHostEnvironment _hosting;
+		//private readonly IHttpContextAccessor _httpContextAccessor;
 
 		public Account(
 			UserManager<User> userManager, IConfiguration config,
@@ -367,7 +369,7 @@ namespace MyCity.API.Controllers.V1.UserApis {
 					theProfile.BirthDate,
 					theProfile.CreateDate,
 					Grade = theProfile.Grade != null ? (int) theProfile.Grade : 0,
-					theProfile.Avatar,
+					Avatar = HttpContext.Request.Host.Value + "/" + theProfile.Avatar,
 					theProfile.LastModifyDate
 				}
 			});
