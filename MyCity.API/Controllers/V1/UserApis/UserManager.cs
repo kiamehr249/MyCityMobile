@@ -354,10 +354,16 @@ namespace MyCity.API.Controllers.V1.UserApis
 
 		}
 
-		[HttpGet]
-		public async Task<IActionResult> GetRateSettings() {
+		[HttpPost]
+		public async Task<IActionResult> GetRateSettings([FromBody] RatingSettingRequest request) {
 
 			var query = _iMyDataServ.iRatingSettingServ.QueryMaker(y => y.Where(x => true));
+
+			if (request.RateType > 0) {
+				var rateType = (RateType) request.RateType;
+				query = query.Where(x => x.RateType == rateType);
+			}
+				
 
 			var totalCount = await query.CountAsync();
 
