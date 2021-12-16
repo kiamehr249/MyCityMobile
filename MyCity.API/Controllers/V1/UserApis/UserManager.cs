@@ -405,6 +405,8 @@ namespace MyCity.API.Controllers.V1.UserApis
 				_iMyDataServ.iRatingSettingServ.Add(item);
 			}
 
+			await _iMyDataServ.iRatingSettingServ.SaveChangesAsync();
+
 			return Ok(new {
 				message = "افزودن تنظیم",
 				data = item
