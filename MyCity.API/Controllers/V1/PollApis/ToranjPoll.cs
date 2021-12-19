@@ -117,7 +117,7 @@ namespace MyCity.API.Controllers.V1.PollApis {
 			}
 
 			var strUserId = user.Id.ToString();
-			var oldAnswer = await _iToranjServ.iPollQuestionAnswerServ.CountAsync(x => x.UserAnswer == strUserId);
+			var oldAnswer = await _iToranjServ.iPollQuestionAnswerServ.CountAsync(x => x.PollID == request.PollId && x.UserAnswer == strUserId);
 			if (oldAnswer > 0) {
 				return StatusCode(403, new { message = "شما قبلا در این نظرسنجی شرکت کرده اید." });
 			}
