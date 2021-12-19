@@ -189,7 +189,8 @@ namespace MyCity.API.Controllers.V1.UserApis
 					y.NationalCode,
 					y.CreateDate,
 					y.LastModifyDate
-				})
+				}),
+				UserRates = x.UserRates.Sum(y => y.RateAmount)
 			}).ToListAsync();
 
 			return Ok(new { 

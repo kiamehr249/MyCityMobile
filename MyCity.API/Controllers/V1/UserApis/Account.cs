@@ -360,6 +360,7 @@ namespace MyCity.API.Controllers.V1.UserApis {
 				Message = "اطلاعات پروفایل کاربری",
 				Data = new {
 					UserId = user.Id,
+					user.PhoneNumber,
 					theProfile.Id,
 					theProfile.FirstName,
 					theProfile.LastName,
