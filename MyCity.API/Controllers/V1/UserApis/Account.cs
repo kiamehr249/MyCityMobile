@@ -336,6 +336,19 @@ namespace MyCity.API.Controllers.V1.UserApis {
 			return Ok(new { 
 				Message = "ثبت اطلاعات کاربری",
 				Data = new {
+					UserId = user.Id,
+					user.PhoneNumber,
+					theProfile.Id,
+					theProfile.FirstName,
+					theProfile.LastName,
+					theProfile.NationalCode,
+					theProfile.Email,
+					theProfile.Address,
+					theProfile.BirthDate,
+					theProfile.CreateDate,
+					Grade = theProfile.Grade != null ? (int) theProfile.Grade : 0,
+					Avatar = string.IsNullOrEmpty(theProfile.Avatar) ? null : HttpContext.Request.Scheme + "://" + HttpContext.Request.Host.Value + "/" + theProfile.Avatar,
+					theProfile.LastModifyDate,
 					IsDone = true
 				}
 			});
@@ -370,7 +383,7 @@ namespace MyCity.API.Controllers.V1.UserApis {
 					theProfile.BirthDate,
 					theProfile.CreateDate,
 					Grade = theProfile.Grade != null ? (int) theProfile.Grade : 0,
-					Avatar = HttpContext.Request.Host.Value + "/" + theProfile.Avatar,
+					Avatar = string.IsNullOrEmpty(theProfile.Avatar) ? null : HttpContext.Request.Scheme + "://" + HttpContext.Request.Host.Value + "/" + theProfile.Avatar,
 					theProfile.LastModifyDate
 				}
 			});
@@ -431,7 +444,7 @@ namespace MyCity.API.Controllers.V1.UserApis {
 				Data = new {
 					UserId = user.Id,
 					ProfileId = theProfile.Id,
-					Avatar = image
+					Avatar = string.IsNullOrEmpty(image) ? null : HttpContext.Request.Scheme + "://" + HttpContext.Request.Host.Value + "/" + theProfile.Avatar
 				}
 			});
 
