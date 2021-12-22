@@ -307,10 +307,8 @@ namespace MyCity.API.Controllers.V1.UserApis {
 			var user = await _userManager.FindByIdAsync(HttpContext.User.Claims.FirstOrDefault(c => c.Type == "Id").Value);
 			var theProfile = await _iMyDataServ.iUserProfileServ.FindAsync(x => x.UserId == user.Id);
 
-			bool IsEdit = true;
 			if (theProfile == null) {
 				theProfile = new UserProfile();
-				IsEdit = false;
 			}
 
 			theProfile.FirstName = request.FirstName;
@@ -320,11 +318,12 @@ namespace MyCity.API.Controllers.V1.UserApis {
 			theProfile.BirthDate = request.BirthDate;
 			theProfile.Address = request.Address;
 			theProfile.Grade = (EducationGrade) request.Grade;
-			theProfile.UserId = user.Id;
+			
 
 			//theProfile.Avatar = 
 
-			if (!IsEdit) {
+			if (theProfile.Id == 0) {
+				theProfile.UserId = user.Id;
 				theProfile.CreateDate = DateTime.Now;
 				_iMyDataServ.iUserProfileServ.Add(theProfile);
 			} else {
@@ -347,7 +346,7 @@ namespace MyCity.API.Controllers.V1.UserApis {
 					theProfile.BirthDate,
 					theProfile.CreateDate,
 					Grade = theProfile.Grade != null ? (int) theProfile.Grade : 0,
-					Avatar = string.IsNullOrEmpty(theProfile.Avatar) ? null : HttpContext.Request.Scheme + "://" + HttpContext.Request.Host.Value + "/" + theProfile.Avatar,
+					Avatar = string.IsNullOrEmpty(theProfile.Avatar) ? null : HttpContext.Request.Scheme + "://" + HttpContext.Request.Host.Value + "/Mobile/" + theProfile.Avatar,
 					theProfile.LastModifyDate,
 					IsDone = true
 				}
@@ -383,7 +382,7 @@ namespace MyCity.API.Controllers.V1.UserApis {
 					theProfile.BirthDate,
 					theProfile.CreateDate,
 					Grade = theProfile.Grade != null ? (int) theProfile.Grade : 0,
-					Avatar = string.IsNullOrEmpty(theProfile.Avatar) ? null : HttpContext.Request.Scheme + "://" + HttpContext.Request.Host.Value + "/" + theProfile.Avatar,
+					Avatar = string.IsNullOrEmpty(theProfile.Avatar) ? null : HttpContext.Request.Scheme + "://" + HttpContext.Request.Host.Value + "/Mobile/" + theProfile.Avatar,
 					theProfile.LastModifyDate
 				}
 			});
@@ -444,7 +443,7 @@ namespace MyCity.API.Controllers.V1.UserApis {
 				Data = new {
 					UserId = user.Id,
 					ProfileId = theProfile.Id,
-					Avatar = string.IsNullOrEmpty(image) ? null : HttpContext.Request.Scheme + "://" + HttpContext.Request.Host.Value + "/" + theProfile.Avatar
+					Avatar = string.IsNullOrEmpty(image) ? null : HttpContext.Request.Scheme + "://" + HttpContext.Request.Host.Value + "/Mobile/" + theProfile.Avatar
 				}
 			});
 
