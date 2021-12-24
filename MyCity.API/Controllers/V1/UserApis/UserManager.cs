@@ -425,7 +425,7 @@ namespace MyCity.API.Controllers.V1.UserApis
 			if (setting == null)
 				return BadRequest(new { message = "تنظیمات سیستم موجود نیست" });
 
-			var recordCount = await _iMyDataServ.iUserRateServ.CountAsync(x => x.ReferenceId == request.ReferenceId && x.RateType == rateType);
+			var recordCount = await _iMyDataServ.iUserRateServ.CountAsync(x => x.ReferenceId == request.ReferenceId && x.RateType == rateType && x.UserId == user.Id);
 			if (recordCount > 0) {
 				return BadRequest(new { message = "این آیتم قبلا ثبت شده است" });
 			}

@@ -318,9 +318,6 @@ namespace MyCity.API.Controllers.V1.UserApis {
 			theProfile.BirthDate = request.BirthDate;
 			theProfile.Address = request.Address;
 			theProfile.Grade = (EducationGrade) request.Grade;
-			
-
-			//theProfile.Avatar = 
 
 			if (theProfile.Id == 0) {
 				theProfile.UserId = user.Id;
