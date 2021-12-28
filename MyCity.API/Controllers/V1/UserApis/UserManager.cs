@@ -454,11 +454,11 @@ namespace MyCity.API.Controllers.V1.UserApis
 		public async Task<IActionResult> GetUserRate() {
 			var user = await _userManager.FindByIdAsync(HttpContext.User.Claims.FirstOrDefault(c => c.Type == "Id").Value);
 
-			var mediaSum = _iMyDataServ.iUserRateServ.QueryMaker(y => y.Where(x => x.RateType == RateType.Media)).Sum(x => x.RateAmount);
+			var mediaSum = _iMyDataServ.iUserRateServ.QueryMaker(y => y.Where(x => x.UserId == user.Id && x.RateType == RateType.Media)).Sum(x => x.RateAmount);
 
-			var pollSum = _iMyDataServ.iUserRateServ.QueryMaker(y => y.Where(x => x.RateType == RateType.Poll)).Sum(x => x.RateAmount);
+			var pollSum = _iMyDataServ.iUserRateServ.QueryMaker(y => y.Where(x => x.UserId == user.Id && x.RateType == RateType.Poll)).Sum(x => x.RateAmount);
 
-			var newsSum = _iMyDataServ.iUserRateServ.QueryMaker(y => y.Where(x => x.RateType == RateType.News)).Sum(x => x.RateAmount);
+			var newsSum = _iMyDataServ.iUserRateServ.QueryMaker(y => y.Where(x => x.UserId == user.Id && x.RateType == RateType.News)).Sum(x => x.RateAmount);
 
 			return Ok(new { 
 				message = "",
