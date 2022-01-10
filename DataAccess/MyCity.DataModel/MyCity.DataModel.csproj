@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\ViewModels\MyCiry.ViewModel\MyCiry.ViewModel.csproj" />
     <ProjectReference Include="..\MyCity.DataAccess\MyCity.DataAccess.csproj" />
   </ItemGroup>
 

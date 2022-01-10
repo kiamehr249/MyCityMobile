@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace MyCity.DataModel
@@ -10,11 +10,6 @@ namespace MyCity.DataModel
         {
 
         }
-
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    optionsBuilder.UseSqlServer("myrealconnectionstring");
-        //}
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

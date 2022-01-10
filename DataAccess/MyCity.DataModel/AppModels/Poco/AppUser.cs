@@ -1,3 +1,4 @@
+using MyCiry.ViewModel;
 using System;
 using System.Collections.Generic;
 
@@ -21,5 +22,8 @@ namespace MyCity.DataModel.AppModels {
 
 		public virtual ICollection<UserProfile> UserProfiles { get; set; }
 		public virtual ICollection<UserRate> UserRates { get; set; }
+		public virtual ICollection<Report> Reports { get; set; }
+		public virtual ICollection<Report> RepExperts { get; set; }
+		public virtual ICollection<ReportExpert> ReportExperts { get; set; }
 	}
 }

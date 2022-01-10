@@ -399,7 +399,7 @@ namespace MyCity.API.Controllers.V1.UserApis {
 
 			if (theProfile != null && !string.IsNullOrEmpty(theProfile.Avatar)) {
 				Tools.RemoveFile(new RemoveFileRequest { 
-					RootPath = _hosting.ContentRootPath,
+					RootPath = _hosting.ContentRootPath + "/" + _config.GetSection("FileRoot:UserAvatar").Value,
 					FilePath = theProfile.Avatar
 				});
 			}

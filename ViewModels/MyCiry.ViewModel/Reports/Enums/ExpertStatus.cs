@@ -1,4 +1,4 @@
-namespace MyCity.DataModel {
+namespace MyCiry.ViewModel {
 	public enum ExpertStatus {
 		NotExpert = 0,
 		Requested = 1,

@@ -12,9 +12,11 @@ namespace MyCity.DataModel.AppModels {
 		public EducationGrade? Grade { get; set; }
 		public string Avatar { get; set; }
 		public int UserId { get; set; }
+		public int? TargetAreaId { get; set; }
 		public DateTime CreateDate { get; set; }
 		public DateTime? LastModifyDate { get; set; }
 
 		public virtual AppUser User { get; set; }
+		public virtual TargetArea TargetArea { get; set; }
 	}
 }

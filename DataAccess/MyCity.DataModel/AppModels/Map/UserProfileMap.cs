@@ -10,6 +10,10 @@ namespace MyCity.DataModel.AppModels {
 			builder.HasOne(x => x.User)
 				.WithMany(x => x.UserProfiles)
 				.HasForeignKey(x => x.UserId);
+
+			builder.HasOne(x => x.TargetArea)
+				.WithMany(x => x.UserProfiles)
+				.HasForeignKey(x => x.TargetAreaId);
 		}
 	}
 }
